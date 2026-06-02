@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id String @id @default(uuid())
+  userId String @unique
+  name String
+  imageUrl String @db.Text
+  email String @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  servers Server[]  //every profile can be creator of multiple servers
+  members Member[] //every profile can have multiple memberships in different servers
+}
+
+model Server {
+  id String @id @default(uuid())
+  name String
+  imageUrl String? @db.Text
+  inviteCode String @unique
+
+  profileId String 
+  profile Profile @relation(fields:[profileId], references:[id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt
+
+  members Member[] //every server can have multiple members
+  channels Channel[] //every server can have multiple channels
+  @@index([profileId])
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+model Member{
+  id String @id @default(uuid())
+  role Role
+
+  profileId String
+  profile Profile @relation(fields:[profileId], references:[id], onDelete: Cascade)
+
+  serverId String
+  server Server @relation(fields:[serverId], references:[id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId])
+  @@index([serverId])
+}
+
+enum ChannelType {
+  TEXT
+  VOICE
+  VIDEO
+}
+
+model Channel {
+  id String @id @default(uuid())
+  name String
+  type ChannelType
+
+  serverId String
+  server Server @relation(fields:[serverId], references:[id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt
+
+  @@index([serverId])
+} //i did not add profileId here to record who created the channel because in discord
+

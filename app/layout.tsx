@@ -31,9 +31,9 @@ export default function RootLayout({
     <ClerkProvider afterSignOutUrl="/"> 
       <html
       lang="en"
-      className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable)}
-      suppressHydrationWarning>
-      <body className={cn("min-h-full flex flex-col", "bg-white dark:bg-[#011124]")}>
+      className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable)} 
+      suppressHydrationWarning >
+      <body className={cn("min-h-full flex flex-col", "bg-white dark:bg-[#14202f]")}>
         <ThemeProvider
             attribute="class"
             defaultTheme="dark"
